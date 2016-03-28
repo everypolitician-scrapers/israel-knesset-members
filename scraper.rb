@@ -84,6 +84,10 @@ def scrape_person(id, icon)
       # Thanks to @mhl for the regex. TODO: handle group changes
       party: groups[tname].to_s.scan(/\w[^\(\),]* *(?:\(.*?\))?/).last || "Unknown",
     })
+    if termid.to_s.empty?
+      warn "Empty term data in #{url}"
+      next
+    end
     ScraperWiki.save_sqlite([:id, :term, :party, :start_date], data)
 
     (@TERMS[termid] ||= []) << [start_date, end_date]
@@ -98,8 +102,8 @@ end
   term = { 
     id: t,
     name: "Knesset #{t}",
-    start_date: ds.map(&:first).min,
-    end_date: ds.map(&:last).max,
+    start_date: ds.map(&:first).compact.min,
+    end_date: ds.map(&:last).compact.max,
   }
   ScraperWiki.save_sqlite([:id], term, 'terms')
 end
