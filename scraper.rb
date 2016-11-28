@@ -106,4 +106,6 @@ term_data = @TERMS.sort_by { |t, _| t.to_i }.map do |t, ds|
     end_date: ds.map(&:last).compact.max,
   }
 end
+# Don't set the date of the current term to the latest resignation date
+term_data.last[:end_date] = nil
 ScraperWiki.save_sqlite([:id], term_data, 'terms')
