@@ -98,12 +98,12 @@ noko_for('http://www.knesset.gov.il/mk/eng/MKDetails_eng.asp').css('td a.EngLett
   scrape_letter(let)
 end
 
-@TERMS.sort_by { |t, _| t.to_i }.each do |t, ds|
-  term = { 
+term_data = @TERMS.sort_by { |t, _| t.to_i }.map do |t, ds|
+  {
     id: t,
     name: "Knesset #{t}",
     start_date: ds.map(&:first).compact.min,
     end_date: ds.map(&:last).compact.max,
   }
-  ScraperWiki.save_sqlite([:id], term, 'terms')
 end
+ScraperWiki.save_sqlite([:id], term_data, 'terms')
